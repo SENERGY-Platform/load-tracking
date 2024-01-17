@@ -39,12 +39,22 @@ class Operator(util.OperatorBase):
         self.loads_path = f'{data_path}/loads.pickle'
         self.mean_features_path = f'{data_path}/mean_features.pickle'
 
+        self.load_data()
+
     def save_data(self):
         with open(self.loads_path, 'wb') as f:
             pickle.dump(self.list_of_loads, f)
         with open(self.mean_features_path, 'wb') as f:
             pickle.dump(self.mean_features, f)
-    
+
+    def load_data(self):
+        if os.path.exists(self.loads_path):
+            with open(self.loads_path, 'rb') as f:
+                self.list_of_loads = pickle.load(f)
+        if os.path.exists(self.mean_features_path):
+            with open(self.mean_features_path, 'rb') as f:
+                self.mean_features = pickle.load(f)
+      
     def run(self, data, selector):
         if selector == "device_data":
             timestamp = utils.todatetime(data["time"])
