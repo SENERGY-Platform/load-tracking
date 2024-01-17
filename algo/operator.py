@@ -61,5 +61,5 @@ class Operator(util.OperatorBase):
                 self.power_list = []
         if selector == "solar_forecast":
             solar_forecast = data["solar_forecast"]
-        activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
-        return {'activate_device': activate_device}
+            activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
+            return {'activate_device': activate_device}
