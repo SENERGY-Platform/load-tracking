@@ -73,4 +73,5 @@ class Operator(util.OperatorBase):
             solar_forecast = data["solar_forecast"]
             if len(self.list_of_loads) > 0:
                 activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
+                print(f"Activate Device: {activate_device}")
                 return {'activate_device': activate_device}
