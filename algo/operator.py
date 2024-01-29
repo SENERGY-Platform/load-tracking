@@ -70,7 +70,7 @@ class Operator(util.OperatorBase):
                 self.save_data()
                 self.energy_list = []
                 self.power_list = []
-        else: #selector == "solar_forecast"
+        elif selector == "solar_forecast":
             try:
                 solar_forecast = data["solar_forecast"]
                 if len(self.list_of_loads) > 0:
