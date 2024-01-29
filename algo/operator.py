@@ -56,7 +56,7 @@ class Operator(util.OperatorBase):
                 self.mean_features = pickle.load(f)
       
     def run(self, data, selector):
-        print(selector + ": " + str(data))
+        print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
             timestamp = utils.todatetime(data["time"])
             energy = float(data["energy"])
