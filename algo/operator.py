@@ -69,7 +69,7 @@ class Operator(util.OperatorBase):
                 self.save_data()
                 self.energy_list = []
                 self.power_list = []
-        if selector == "solar_forecast":
+        else: #selector == "solar_forecast"
             solar_forecast = data["solar_forecast"]
             if len(self.list_of_loads) > 0:
                 activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
