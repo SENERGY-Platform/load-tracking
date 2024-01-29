@@ -70,8 +70,11 @@ class Operator(util.OperatorBase):
                 self.energy_list = []
                 self.power_list = []
         else: #selector == "solar_forecast"
-            solar_forecast = data["solar_forecast"]
-            if len(self.list_of_loads) > 0:
-                activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
-                print(f"Activate Device: {activate_device}")
-                return {'activate_device': activate_device}
+            try:
+                solar_forecast = data["solar_forecast"]
+                if len(self.list_of_loads) > 0:
+                    activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
+                    print(f"Activate Device: {activate_device}")
+                    return {'activate_device': activate_device}
+            except KeyError:
+                "No solar forecasting available right now."
