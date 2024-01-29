@@ -56,13 +56,14 @@ class Operator(util.OperatorBase):
                 self.mean_features = pickle.load(f)
       
     def run(self, data, selector):
+        print(selector + ": " + str(data))
         if selector == "device_data":
             timestamp = utils.todatetime(data["time"])
             energy = float(data["energy"])
             power = float(data["power"])
             self.energy_list.append([timestamp, energy])
             self.power_list.append([timestamp, power])
-            print('energy: '+str(energy)+'  '+'power: '+str(power)+'   '+'time: '+str(timestamp))
+            #print('energy: '+str(energy)+'  '+'power: '+str(power)+'   '+'time: '+str(timestamp))
             old_number_of_loads = len(self.list_of_loads)
             self.list_of_loads, self.mean_features, self.active = load_device.online_tracking_loads(self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active)
             if len(self.list_of_loads) > old_number_of_loads:
