@@ -39,6 +39,8 @@ class Operator(util.OperatorBase):
         self.loads_path = f'{data_path}/loads.pickle'
         self.mean_features_path = f'{data_path}/mean_features.pickle'
 
+        self.results_from_same_weather_forecast = []
+
         self.load_data()
 
     def save_data(self):
@@ -72,11 +74,13 @@ class Operator(util.OperatorBase):
                 self.energy_list = []
                 self.power_list = []
         elif selector == "solar_forecast":
-            try:
-                solar_forecast = data["solar_forecast"]
+            if len(self.results_from_same_weather_forecast)<47:
+                self.results_from_same_weather_forecast.append(data)
+            elif len(self.results_from_same_weather_forecast)==47:
+                self.results_from_same_weather_forecast.append(data)
+                solar_forecast = [(data["solar_forecast_timestamp"], data["solar_forecast"]) for data in self.results_from_same_weather_forecast]
                 if len(self.list_of_loads) > 0:
                     activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
                     print(f"Activate Device: {activate_device}")
                     return {'activate_device': activate_device}
-            except KeyError:
-                "No solar forecasting available right now."
+                self.results_from_same_weather_forecast = []
