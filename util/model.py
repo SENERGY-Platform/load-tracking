@@ -35,7 +35,7 @@ class Config(simple_struct.Structure):
     data_path = "/opt/data"
     device_name: str = None
     logger_level = "debug"
-    selector: typing.List[Selector] = None # Should be "selectors"!
+    selectors: typing.List[Selector] = None
 
     def __init__(self, d, **kwargs):
         super().__init__(d, **kwargs)
