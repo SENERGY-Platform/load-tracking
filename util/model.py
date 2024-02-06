@@ -34,7 +34,7 @@ class Config(simple_struct.Structure):
     device_id: str = None
     data_path = "/opt/data"
     device_name: str = None
-    logger_level = "warning"
+    logger_level = "debug"
     selectors: typing.List[Selector] = None
 
     def __init__(self, d, **kwargs):
