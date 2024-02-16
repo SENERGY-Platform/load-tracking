@@ -30,8 +30,8 @@ class Operator(OperatorBase):
     configType = CustomConfig
 
     selectors = [
-        Selector([{"name": "device_data", "args": ["time", "energy", "power"]}, 
-                  {"name": "solar_forecast", "args": ["solar_forecast", "solar_forecast_timestamp"]}])
+        Selector({"name": "device_data", "args": ["time", "energy", "power"]}), 
+        Selector({"name": "solar_forecast", "args": ["solar_forecast", "solar_forecast_timestamp"]})
     ]
 
     def init(self, *args, **kwargs):
