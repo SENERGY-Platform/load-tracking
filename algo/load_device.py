@@ -47,10 +47,10 @@ def extract_loads(power_series, energy_series):
 
 def online_tracking_loads(power_list, energy_list, list_of_loads, mean_features, active):
     if (active==False and power_list[-1][1] < 10) or (active==True and power_list[-1][1] > 1.5):
-        return list_of_loads, mean_features, active
+        return power_list, energy_list, list_of_loads, mean_features, active
     if active==False and power_list[-1][1] > 10:
         active = True
-        return list_of_loads, mean_features, active
+        return power_list, energy_list, list_of_loads, mean_features, active
     power_series = pd.Series(data=[data_point for _, data_point in power_list], index=[timestamp for timestamp, _ in power_list]).sort_index()
     power_series = power_series[~power_series.index.duplicated(keep='first')]
     energy_series = pd.Series(data=[data_point for _, data_point in energy_list], index=[timestamp for timestamp, _ in energy_list]).sort_index()
