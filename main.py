@@ -82,7 +82,7 @@ class Operator(OperatorBase):
             self.power_list.append([timestamp, power])
             #print('energy: '+str(energy)+'  '+'power: '+str(power)+'   '+'time: '+str(timestamp))
             old_number_of_loads = len(self.list_of_loads)
-            self.list_of_loads, self.mean_features, self.active = load_device.online_tracking_loads(self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active)
+            self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active = load_device.online_tracking_loads(self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active)
             if len(self.list_of_loads) > old_number_of_loads:
                 self.save_data()
                 self.energy_list = []

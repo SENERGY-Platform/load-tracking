@@ -55,12 +55,15 @@ def online_tracking_loads(power_list, energy_list, list_of_loads, mean_features,
     power_series = power_series[~power_series.index.duplicated(keep='first')]
     energy_series = pd.Series(data=[data_point for _, data_point in energy_list], index=[timestamp for timestamp, _ in energy_list]).sort_index()
     energy_series = energy_series[~energy_series.index.duplicated(keep='first')]
-    
+
     old_number_of_loads = len(list_of_loads)
     list_of_loads += extract_loads(power_series, energy_series)
+    
     if len(list_of_loads) > old_number_of_loads:
         print("New load just ended!")
         active = False
+        power_list = []
+        energy_list = []
     
     
     if len(list_of_loads) >= 1:
@@ -69,7 +72,7 @@ def online_tracking_loads(power_list, energy_list, list_of_loads, mean_features,
         mean_features['mean_length'] = np.mean([load.length.total_seconds() for load in list_of_loads])
         mean_features['mean_threshold'] = np.mean([load.threshold for load in list_of_loads])
     
-    return list_of_loads, mean_features, active
+    return power_list, energy_list, list_of_loads, mean_features, active
     
 
     
