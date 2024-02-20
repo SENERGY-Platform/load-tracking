@@ -13,7 +13,7 @@ class Load:
     def compute_features(self):
         self.max_power = self.power_series.max()
         self.length = self.power_series.index[-1] - self.power_series.index[0]
-        self.threshold = self.power_series.quantile(q=0.5)
+        self.threshold = self.power_series.quantile(q=0.8)
 
 
 def extract_loads(power_series, energy_series):
