@@ -16,7 +16,7 @@ def check_if_solar_power_sufficient(mean_features, solar_forecast):
     last_relevant_time_of_forecast_index = len(solar_forecast) - len([forecast_ts for forecast_ts, _ in solar_forecast if todatetime(forecast_ts)>=current_time+pd.Timedelta(mean_length,'seconds')])
     relevant_forecasts = [solar_forecast[i] for i in range(last_relevant_time_of_forecast_index)]
     threshold = mean_features['mean_threshold']
-    if [forecast for forecast in relevant_forecasts if forecast < threshold] == []:
+    if [forecast for _, forecast in relevant_forecasts if forecast < threshold] == []:
          activate_device = True
     else:
          activate_device = False 
