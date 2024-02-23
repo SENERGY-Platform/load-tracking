@@ -93,11 +93,11 @@ class Operator(OperatorBase):
             elif len(self.results_from_same_weather_forecast)==47:
                 self.results_from_same_weather_forecast.append(data)
                 solar_forecast = [(data["solar_forecast_timestamp"], data["solar_forecast"]) for data in self.results_from_same_weather_forecast]
+                self.results_from_same_weather_forecast = []
                 if len(self.list_of_loads) > 0:
                     activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
                     print(f"Activate Device: {activate_device}")
                     return {'activate_device': activate_device}
-                self.results_from_same_weather_forecast = []
 
 from operator_lib.operator_lib import OperatorLib
 if __name__ == "__main__":
