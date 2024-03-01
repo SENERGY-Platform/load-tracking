@@ -74,7 +74,7 @@ class Operator(OperatorBase):
             with open(self.mean_features_path, 'rb') as f:
                 self.mean_features_dict = pickle.load(f)
       
-    def run(self, data, selector):
+    def run(self, data, selector, topic):
         print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
             topic = data["topic"]
