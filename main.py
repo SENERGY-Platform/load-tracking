@@ -19,6 +19,7 @@ __all__ = ("Operator", )
 from operator_lib.util import OperatorBase, Selector
 import os
 import pickle
+from collections import defaultdict
 from algo import load_device, utils
 
 from operator_lib.util import Config
@@ -41,15 +42,17 @@ class Operator(OperatorBase):
         if not os.path.exists(data_path):
             os.mkdir(data_path)
 
-        self.power_list = []
-        self.energy_list = []
+        self.power_list_dict = defaultdict(list)
+        self.energy_list_dict = defaultdict(list)
 
         self.active = False
 
-        self.list_of_loads = []
+        self.list_of_loads_dict = defaultdict(list)
 
-        self.mean_features = {'mean_consumed_energy': 0, 'mean_max_power': 0, 'mean_length': 0, 'mean_threshold': 0} # mean_length is given in seconds
+        self.mean_features_dict = defaultdict(dict)# {'mean_consumed_energy': 0, 'mean_max_power': 0, 'mean_length': 0, 'mean_threshold': 0} # mean_length is given in seconds
 
+        self.activate_device_dict = defaultdict(bool)
+        
         self.loads_path = f'{data_path}/loads.pickle'
         self.mean_features_path = f'{data_path}/mean_features.pickle'
 
@@ -59,34 +62,41 @@ class Operator(OperatorBase):
 
     def save_data(self):
         with open(self.loads_path, 'wb') as f:
-            pickle.dump(self.list_of_loads, f)
+            pickle.dump(self.list_of_loads_dict, f)
         with open(self.mean_features_path, 'wb') as f:
-            pickle.dump(self.mean_features, f)
+            pickle.dump(self.mean_features_dict, f)
 
     def load_data(self):
         if os.path.exists(self.loads_path):
             with open(self.loads_path, 'rb') as f:
-                self.list_of_loads = pickle.load(f)
+                self.list_of_loads_dict = pickle.load(f)
         if os.path.exists(self.mean_features_path):
             with open(self.mean_features_path, 'rb') as f:
-                self.mean_features = pickle.load(f)
+                self.mean_features_dict = pickle.load(f)
       
     def run(self, data, selector):
         print(f"{selector}  :   {str(data)}")
-        #print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
+            topic = data["topic"]
             timestamp = utils.todatetime(data["time"])
             energy = float(data["energy"])
             power = float(data["power"])
-            self.energy_list.append([timestamp, energy])
-            self.power_list.append([timestamp, power])
-            #print('energy: '+str(energy)+'  '+'power: '+str(power)+'   '+'time: '+str(timestamp))
-            old_number_of_loads = len(self.list_of_loads)
-            self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active = load_device.online_tracking_loads(self.power_list, self.energy_list, self.list_of_loads, self.mean_features, self.active)
-            if len(self.list_of_loads) > old_number_of_loads:
+            self.energy_list_dict[topic].append([timestamp, energy])
+            self.power_list_dict[topic].append([timestamp, power])
+            old_number_of_loads = len(self.list_of_loads_dict[topic])
+            (self.power_list_dict[topic],
+             self.energy_list_dict[topic],
+             self.list_of_loads_dict[topic],
+             self.mean_features_dict[topic],
+             self.active) = load_device.online_tracking_loads(self.power_list_dict[topic],
+                                                              self.energy_list_dict[topic],
+                                                              self.list_of_loads_dict[topic],
+                                                              self.mean_features_dict[topic],
+                                                              self.active)
+            if len(self.list_of_loads_dict[topic]) > old_number_of_loads:
                 self.save_data()
-                self.energy_list = []
-                self.power_list = []
+                self.energy_list_dict[topic] = []
+                self.power_list_dict[topic] = []
         elif selector == "solar_forecast":
             if len(self.results_from_same_weather_forecast)<47:
                 self.results_from_same_weather_forecast.append(data)
@@ -94,10 +104,11 @@ class Operator(OperatorBase):
                 self.results_from_same_weather_forecast.append(data)
                 solar_forecast = [(data["solar_forecast_timestamp"], data["solar_forecast"]) for data in self.results_from_same_weather_forecast]
                 self.results_from_same_weather_forecast = []
-                if len(self.list_of_loads) > 0:
-                    activate_device = utils.check_if_solar_power_sufficient(self.mean_features, solar_forecast)
-                    print(f"Activate Device: {activate_device}")
-                    return {'activate_device': activate_device}
+                for topic, list_of_loads in self.list_of_loads_dict.items():
+                    if len(list_of_loads) > 0:
+                        self.activate_device_dict[topic] = utils.check_if_solar_power_sufficient(self.mean_features_dict[topic], solar_forecast)
+                        print(f"Activate Device {topic}: {self.activate_device_dict[topic]}")
+                return {f'activate_device_{topic}': self.activate_device_dict[topic] for topic in self.list_of_loads_dict.keys()}
 
 from operator_lib.operator_lib import OperatorLib
 if __name__ == "__main__":
