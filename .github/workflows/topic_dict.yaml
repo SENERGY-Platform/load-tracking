@@ -1,4 +1,4 @@
-name: 'PROD build'
+name: 'topic_dict build'
 
 on:
   push:
