@@ -77,7 +77,6 @@ class Operator(OperatorBase):
     def run(self, data, selector, topic):
         print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
-            topic = data["topic"]
             timestamp = utils.todatetime(data["time"])
             energy = float(data["energy"])
             power = float(data["power"])
