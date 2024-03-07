@@ -20,19 +20,19 @@ def extract_loads(power_series, energy_series):
     list_of_loads = []
     list_of_load_inds = []
     new_load = []
-    active = False
+    active_test = False
     for i in range(len(power_series)):
-        if active == True:
+        if active_test == True:
             new_load.append(i)
             if power_series[i] < 1.5: # If power values are below 1.5 for more than 10 time steps the load has stopped
                 j = max([k for k in range(i) if power_series[k] >= 1.5])
                 if power_series.index[i] - power_series.index[j] >= pd.Timedelta(5, "min"):
-                    active = False
+                    active_test = False
                     list_of_load_inds.append(new_load)
                     new_load = []
-        elif active == False:    
+        elif active_test == False:    
             if power_series[i] > 10:
-                active = True
+                active_test = True
                 if i < 1:
                     start_index = 0
                 else:

@@ -45,7 +45,7 @@ class Operator(OperatorBase):
         self.power_list_dict = defaultdict(list)
         self.energy_list_dict = defaultdict(list)
 
-        self.active = False
+        self.active = defaultdict(bool)
 
         self.list_of_loads_dict = defaultdict(list)
 
@@ -88,11 +88,11 @@ class Operator(OperatorBase):
              self.energy_list_dict[topic],
              self.list_of_loads_dict[topic],
              self.mean_features_dict[topic],
-             self.active) = load_device.online_tracking_loads(self.power_list_dict[topic],
+             self.active[topic]) = load_device.online_tracking_loads(self.power_list_dict[topic],
                                                               self.energy_list_dict[topic],
                                                               self.list_of_loads_dict[topic],
                                                               self.mean_features_dict[topic],
-                                                              self.active)
+                                                              self.active[topic])
             if len(self.list_of_loads_dict[topic]) > old_number_of_loads:
                 self.save_data()
                 self.energy_list_dict[topic] = []
