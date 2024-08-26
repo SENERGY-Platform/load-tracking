@@ -16,7 +16,7 @@
 
 __all__ = ("Operator", )
 
-from operator_lib.util import OperatorBase, Selector
+from operator_lib.util import OperatorBase, Selector, logger
 import os
 import pickle
 from collections import defaultdict
@@ -51,7 +51,7 @@ class Operator(OperatorBase):
 
         self.mean_features_dict = defaultdict(dict)# {'mean_consumed_energy': 0, 'mean_max_power': 0, 'mean_length': 0, 'mean_threshold': 0} # mean_length is given in seconds
 
-        self.activate_device_dict = defaultdict(bool)
+        self.activation_score_device_dict = defaultdict(bool)
         
         self.loads_path = f'{data_path}/loads.pickle'
         self.mean_features_path = f'{data_path}/mean_features.pickle'
@@ -105,9 +105,11 @@ class Operator(OperatorBase):
                 self.results_from_same_weather_forecast = []
                 for topic, list_of_loads in self.list_of_loads_dict.items():
                     if len(list_of_loads) > 0:
-                        self.activate_device_dict[topic] = utils.check_if_solar_power_sufficient(self.mean_features_dict[topic], solar_forecast)
-                        print(f"Activate Device {topic}: {self.activate_device_dict[topic]}")
-                return {f'activate_device_{topic}': self.activate_device_dict[topic] for topic in self.list_of_loads_dict.keys()}
+                        self.activation_score_device_dict[topic] = utils.compute_activation_score(self.mean_features_dict[topic], solar_forecast)
+                        print(f"Activation score of Device {topic}: {self.activation_score_device_dict[topic]}")
+                sorted_after_activation_score = sorted(self.activation_score_device_dict.items(), key=lambda item: item[1])
+                logger.debug("sorted_after_activation_score")
+                return {f'activate_device_{topic}': self.activation_score_device_dict[topic] for topic in self.list_of_loads_dict.keys()}
 
 from operator_lib.operator_lib import OperatorLib
 if __name__ == "__main__":
