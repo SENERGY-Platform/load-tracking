@@ -18,6 +18,7 @@ __all__ = ("Operator", )
 
 from operator_lib.util import OperatorBase, Selector, logger
 import os
+import json
 import pickle
 from collections import defaultdict
 from algo import load_device, utils
@@ -108,8 +109,13 @@ class Operator(OperatorBase):
                         self.activation_score_device_dict[topic] = utils.compute_activation_score(self.mean_features_dict[topic], solar_forecast)
                         print(f"Activation score of Device {topic}: {self.activation_score_device_dict[topic]}")
                 sorted_after_activation_score = sorted(self.activation_score_device_dict.items(), key=lambda item: item[1])
-                logger.debug("sorted_after_activation_score")
-                return {f'activate_device_{topic}': self.activation_score_device_dict[topic] for topic in self.list_of_loads_dict.keys()}
+                output = self.create_output(sorted_after_activation_score)
+                logger.debug("Sorted with respect to activation score: " + output)
+                return output
+            
+    def create_output(self, sorted_after_activation_score):
+        output_str = json.dumps(sorted_after_activation_score)
+        return {"activation_score_sorting": output_str}
 
 from operator_lib.operator_lib import OperatorLib
 if __name__ == "__main__":
