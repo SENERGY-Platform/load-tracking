@@ -81,6 +81,7 @@ class Operator(OperatorBase):
             timestamp = utils.todatetime(data["time"])
             energy = float(data["energy"])
             power = float(data["power"])
+            logger.debug(f'Time: {timestamp},   Power: {power},   Energy: {energy}')
             self.energy_list_dict[topic].append([timestamp, energy])
             self.power_list_dict[topic].append([timestamp, power])
             old_number_of_loads = len(self.list_of_loads_dict[topic])
