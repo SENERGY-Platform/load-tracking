@@ -21,6 +21,11 @@ import os
 import pickle
 from algo import load_device, utils
 
+import typing
+import datetime
+
+import pandas as pd
+
 from operator_lib.util import Config
 class CustomConfig(Config):
     data_path = "/opt/data"
@@ -71,11 +76,13 @@ class Operator(OperatorBase):
             with open(self.mean_features_path, 'rb') as f:
                 self.mean_features = pickle.load(f)
       
-    def run(self, data, selector):
+    def run(self, data: typing.Dict[str, typing.Any], selector: str, device_id, timestamp: datetime.datetime):
+        # Convert to german time and then forget the timezone.
+        timestamp = pd.Timestamp(timestamp).tz_localize("Zulu").tz_convert("Europe/Berlin").tz_localize(None)
+
         print(f"{selector}  :   {str(data)}")
-        #print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
-            timestamp = utils.todatetime(data["time"])
+            data = {"energy": data["energy"], "power": data["power"], "time": timestamp}
             energy = float(data["energy"])
             power = float(data["power"])
             self.energy_list.append([timestamp, energy])
