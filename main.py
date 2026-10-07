@@ -78,7 +78,7 @@ class Operator(OperatorBase):
       
     def run(self, data: typing.Dict[str, typing.Any], selector: str, device_id, timestamp: datetime.datetime):
         # Convert to german time and then forget the timezone.
-        timestamp = pd.Timestamp(timestamp).tz_localize("Zulu").tz_convert("Europe/Berlin").tz_localize(None)
+        timestamp = pd.Timestamp(timestamp).tz_convert("Europe/Berlin").tz_localize(None)
 
         print(f"{selector}  :   {str(data)}")
         if selector == "device_data":
