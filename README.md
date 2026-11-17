@@ -22,7 +22,9 @@ pandas 2, which this repository does not pin yet, so it runs in its own environm
     uv run --no-project --python 3.10 --with "operator-lib @ git+https://github.com/SENERGY-Platform/analytics-operator-lib-python@v1.14.0" \
         python scripts/replay_loads.py fetch devices.json cache/ --days 60
 
-The tests run with `python -m unittest discover -s tests`.
+The tests run with `python -m unittest discover -s tests`. Measurements and design decisions are
+in [docs/](docs/), the comparison on recorded appliances in
+[docs/run-detection-measured-on-recorded-appliances.md](docs/run-detection-measured-on-recorded-appliances.md).
 
 ## Config options
 <!---
